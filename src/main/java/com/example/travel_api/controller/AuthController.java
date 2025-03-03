@@ -62,7 +62,7 @@ public class AuthController {
         if (user.isPresent()  && passwordEncoder.matches(usuario.getContrasena(), user.get().getContrasena())) {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(usuario.getEmail(), usuario.getContrasena()));
-            String token = jwtUtil.generateToken(user.get().getEmail(), user.get().getTipo_usuario().name());
+            String token = jwtUtil.generateToken(user.get().getEmail(), user.get().getTipo_usuario().name(), user.get().getId_usuario());
 
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
