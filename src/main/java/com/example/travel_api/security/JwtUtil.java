@@ -15,9 +15,10 @@ public class JwtUtil {
 
     private static final String SECRET_KEY = "secret123";
 
-    public String generateToken(String email, String rol) {
+    public String generateToken(String email, String rol, int id_usuario) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("rol", rol);
+        claims.put("id_usuario", id_usuario);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(email)
