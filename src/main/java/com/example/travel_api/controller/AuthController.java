@@ -5,8 +5,11 @@ import com.example.travel_api.entity.Usuario;
 import com.example.travel_api.interfaces.usuarioRepository;
 import com.example.travel_api.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,5 +72,39 @@ public class AuthController {
             throw new RuntimeException("Credenciales incorrectas");
         }
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<Usuario> getProfile(Authentication authentication) {
+        String email = authentication.getName();
+        Optional<Usuario> user = usuariorepository.findByEmail(email);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<Usuario> updateProfile(
+            Authentication authentication,
+            @RequestBody Usuario updatedUsuario) {
+
+        String email = authentication.getName();
+        Optional<Usuario> user = usuariorepository.findByEmail(email);
+
+        if (user.isPresent()) {
+            Usuario usuario = user.get();
+            usuario.setNombre(updatedUsuario.getNombre());
+            usuario.setApellido(updatedUsuario.getApellido());
+            usuario.setTelefono(updatedUsuario.getTelefono());
+
+            if (updatedUsuario.getContrasena() != null && updatedUsuario.getContrasena().isEmpty()) {
+                usuario.setContrasena(passwordEncoder.encode(updatedUsuario.getContrasena()));
+            }
+
+            usuariorepository.save(usuario);
+            return ResponseEntity.ok(usuario);
+
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+    }
+
 
 }
