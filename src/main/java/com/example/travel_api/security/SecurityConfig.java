@@ -31,8 +31,10 @@ public class SecurityConfig {
                 .cors(cors -> cors.configure(http))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login", "/auth/register").permitAll()
-                        .requestMatchers("/aerolinea/**").permitAll()
                         .requestMatchers("/auth/profile").authenticated()
+                        .requestMatchers("/aerolinea/**").permitAll()
+                        .requestMatchers("/aeropuerto/**").permitAll()
+                        .requestMatchers("/vuelos/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

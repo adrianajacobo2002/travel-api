@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,9 +28,15 @@ public class VueloController {
             @RequestParam(required = false) Vuelo.TipoVuelo tipoVuelo,
             @RequestParam(required = false) Integer aerolinea
             ) {
-        LocalDateTime salida = LocalDateTime.parse(fechaSalida);
-        LocalDateTime regreso = (fechaRegreso != null) ? LocalDateTime.parse(fechaRegreso) : null;
-        return vueloService.buscarVuelos(origen, destino, salida, regreso, tipoVuelo, aerolinea);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        try{
+            LocalDateTime salida = LocalDateTime.parse(fechaSalida, formatter);
+            LocalDateTime regreso = (fechaRegreso != null) ? LocalDateTime.parse(fechaRegreso, formatter) : null;
+            return vueloService.buscarVuelos(origen, destino, salida, regreso, tipoVuelo, aerolinea);
+        }catch (DateTimeException e){
+            throw new DateTimeException("Fecha de salida incorrecta");
+        }
+
     }
 
     @GetMapping("/{id}")

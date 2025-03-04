@@ -1,5 +1,6 @@
 package com.example.travel_api.Service;
 
+import com.example.travel_api.entity.Aerolinea;
 import com.example.travel_api.entity.Aeropuerto;
 import com.example.travel_api.interfaces.aeropuertoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,10 @@ public class AeropuertoService {
 
     public List<Aeropuerto> listarAeropuertos() {
         return repo.findAll();
+    }
+
+    public Aeropuerto crearAeropuerto(Aeropuerto aeropuerto) {
+        return repo.save(aeropuerto);
     }
 
 

@@ -3,14 +3,12 @@ package com.example.travel_api.controller;
 import com.example.travel_api.Service.AeropuertoService;
 import com.example.travel_api.entity.Aeropuerto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/aeropuertos")
+@RequestMapping("/aeropuerto")
 public class AeropuertoController {
 
     @Autowired
@@ -19,5 +17,10 @@ public class AeropuertoController {
     @GetMapping
     public List<Aeropuerto> obtenerAeropuertos() {
         return aeropuertoService.listarAeropuertos();
+    }
+
+    @PostMapping
+    public Aeropuerto createAeropuerto(@RequestBody Aeropuerto aeropuerto) {
+        return aeropuertoService.crearAeropuerto(aeropuerto);
     }
 }
