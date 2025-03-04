@@ -14,8 +14,9 @@ public class VueloService {
     @Autowired
     private vueloRepository repository;
 
-    public List<Vuelo> buscarVuelos(int origen, int destino, LocalDateTime fecha_salida) {
-        return repository.buscarVuelos(origen, destino, fecha_salida);
+    public List<Vuelo> buscarVuelos(int origen, int destino, LocalDateTime fecha_salida, LocalDateTime fecha_regreso,
+                                    Vuelo.TipoVuelo tipoVuelo, Integer aerolinea) {
+        return repository.buscarVuelos(origen, destino, fecha_salida, fecha_regreso, tipoVuelo, aerolinea);
     }
 
     public Optional<Vuelo> obtenerVueloPorId(int id) {

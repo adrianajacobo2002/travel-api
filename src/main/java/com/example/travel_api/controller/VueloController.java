@@ -18,9 +18,17 @@ public class VueloController {
     private VueloService vueloService;
 
     @GetMapping("/buscar")
-    public List<Vuelo> buscarVuelos(@RequestParam int origen, @RequestParam int destino, @RequestParam String fecha) {
-        LocalDateTime fechaSalida = LocalDateTime.parse(fecha);
-        return vueloService.buscarVuelos(origen, destino, fechaSalida);
+    public List<Vuelo> buscarVuelos(
+            @RequestParam int origen,
+            @RequestParam int destino,
+            @RequestParam String fechaSalida,
+            @RequestParam(required = false) String fechaRegreso,
+            @RequestParam(required = false) Vuelo.TipoVuelo tipoVuelo,
+            @RequestParam(required = false) Integer aerolinea
+            ) {
+        LocalDateTime salida = LocalDateTime.parse(fechaSalida);
+        LocalDateTime regreso = (fechaRegreso != null) ? LocalDateTime.parse(fechaRegreso) : null;
+        return vueloService.buscarVuelos(origen, destino, salida, regreso, tipoVuelo, aerolinea);
     }
 
     @GetMapping("/{id}")
