@@ -1,6 +1,8 @@
 package com.example.travel_api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -13,17 +15,22 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "reservas")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_reserva")
 public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("id_reserva")
     private int id_reserva;
 
-    @JsonProperty("id_usuario")
-    private int id_usuario;
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
+    @JsonProperty("usuario")
+    private Usuario usuario;
 
-    @JsonProperty("id_vuelo_clase")
-    private int id_vuelo_clase;
+    @ManyToOne
+    @JoinColumn(name = "id_vuelo_clase", nullable = false)
+    @JsonProperty("vueloClase")
+    private VueloClase vueloClase;
 
     @JsonProperty("fecha_reserva")
     private Date fecha_reserva;
@@ -40,8 +47,11 @@ public class Reserva {
         completado
     }
 
+    @ElementCollection
+    @CollectionTable(name = "asientos_reservados", joinColumns = @JoinColumn(name = "id_reserva"))
+    @Column(name = "asientos_reservados")
     @JsonProperty("asientos_reservados")
-    private String asientos_reservados;
+    private List<String> asientos_reservados;
 
     @JsonProperty("id_plan")
     private int id_plan;

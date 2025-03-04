@@ -15,8 +15,10 @@ public class Pasajero {
     @JsonProperty("id_pasajero")
     private int id_pasajero;
 
-    @JsonProperty("id_reserva")
-    private int id_reserva;
+    @ManyToOne
+    @JoinColumn(name = "id_reserva", nullable = false)
+    @JsonProperty("reserva")
+    private Reserva reserva;
 
     @JsonProperty("nombre")
     private String nombre;
