@@ -61,19 +61,29 @@ public class VueloController {
                                              @RequestParam int destino,
                                              @RequestParam String fechaSalida,
                                              @RequestParam(required = false) String fechaRegreso,
-                                             @RequestParam(required = false) Vuelo.TipoVuelo tipoVuelo,
+                                             @RequestParam(required = false) String tipoVuelo,
                                              @RequestParam(required = false) Integer aerolinea,
                                              @RequestParam(defaultValue = "0") int escalas){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         try {
             LocalDateTime salida = LocalDateTime.parse(fechaSalida, formatter);
             LocalDateTime regreso = (fechaRegreso != null) ? LocalDateTime.parse(fechaRegreso, formatter) : null;
+
+            Vuelo.TipoVuelo tipoVueloEnum = null;
+            if(tipoVuelo != null && !tipoVuelo.isEmpty()){
+                try{
+                    tipoVueloEnum = Vuelo.TipoVuelo.valueOf(tipoVuelo.toLowerCase());
+                }catch (IllegalArgumentException e){
+                    throw new IllegalArgumentException("Tipo de vuelo no valido");
+                }
+
+            }
             switch (escalas) {
                 case 0:
-                    return List.copyOf(vueloService.buscarVuelosDirectos(origen, destino, salida, regreso, tipoVuelo, aerolinea));
+                    return List.copyOf(vueloService.buscarVuelosDirectos(origen, destino, salida, regreso, tipoVueloEnum, aerolinea));
                 case 1:
                 case 2:
-                    return List.copyOf(vueloService.buscarVuelosEscalas(origen, destino, salida, regreso, tipoVuelo, aerolinea));
+                    return List.copyOf(vueloService.buscarVuelosEscalas(origen, destino, salida, regreso, tipoVueloEnum, aerolinea));
                 default:
                     throw new IllegalArgumentException("Número de escalas no válido.");
             }

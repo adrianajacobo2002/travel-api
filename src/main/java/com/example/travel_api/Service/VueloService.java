@@ -73,6 +73,8 @@ public class VueloService {
         return resultado;
     }
 
+
+
     public Optional<Vuelo> obtenerVueloPorId(int id) {
         return repository.findById(id);
     }
@@ -92,7 +94,7 @@ public class VueloService {
             vuelo.setDuracion(nuevoVuelo.getDuracion());
             vuelo.setPrecio_base(nuevoVuelo.getPrecio_base());
             vuelo.setTipo_vuelo(nuevoVuelo.getTipo_vuelo());
-            vuelo.setId_vuelo_regreso(nuevoVuelo.getId_vuelo_regreso());
+            vuelo.setVueloRegreso(nuevoVuelo.getVueloRegreso());
             return repository.save(vuelo);
         }).orElseThrow(()-> new RuntimeException("No se encontro el registro"));
     }

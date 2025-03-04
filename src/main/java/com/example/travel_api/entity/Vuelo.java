@@ -1,7 +1,7 @@
 package com.example.travel_api.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -15,6 +15,7 @@ import java.time.LocalTime;
 @Setter
 @Entity
 @Table(name = "vuelos")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_vuelo")
 public class Vuelo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,7 +65,10 @@ public class Vuelo {
 
     @OneToOne
     @JoinColumn(name = "id_vuelo_regreso", nullable = true)
-    private Vuelo id_vuelo_regreso;
+    private Vuelo vueloRegreso;
+
+    @OneToOne(mappedBy = "vueloRegreso")
+    private Vuelo vueloIda;
 
     public Vuelo() {}
 
