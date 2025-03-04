@@ -39,6 +39,49 @@ public class VueloController {
 
     }
 
+    @GetMapping("/buscarCombinado")
+    public List<Object> buscarVuelosDirectosyEscalas(@RequestParam int origen,
+                                                    @RequestParam int destino,
+                                                    @RequestParam String fechaSalida,
+                                                    @RequestParam(required = false) String fechaRegreso,
+                                                    @RequestParam(required = false) Vuelo.TipoVuelo tipoVuelo,
+                                                    @RequestParam(required = false) Integer aerolinea){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        try{
+            LocalDateTime salida = LocalDateTime.parse(fechaSalida, formatter);
+            LocalDateTime regreso = (fechaRegreso != null) ? LocalDateTime.parse(fechaRegreso, formatter) : null;
+            return vueloService.buscarVuelosEscalasyDirectos(origen, destino, salida, regreso, tipoVuelo, aerolinea);
+        }catch (DateTimeException e){
+            throw new DateTimeException("Fecha de salida incorrecta");
+        }
+    }
+
+    @GetMapping("/buscarFiltrado")
+    public List<Object> buscarVuelosFiltrado(@RequestParam int origen,
+                                             @RequestParam int destino,
+                                             @RequestParam String fechaSalida,
+                                             @RequestParam(required = false) String fechaRegreso,
+                                             @RequestParam(required = false) Vuelo.TipoVuelo tipoVuelo,
+                                             @RequestParam(required = false) Integer aerolinea,
+                                             @RequestParam(defaultValue = "0") int escalas){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        try {
+            LocalDateTime salida = LocalDateTime.parse(fechaSalida, formatter);
+            LocalDateTime regreso = (fechaRegreso != null) ? LocalDateTime.parse(fechaRegreso, formatter) : null;
+            switch (escalas) {
+                case 0:
+                    return List.copyOf(vueloService.buscarVuelosDirectos(origen, destino, salida, regreso, tipoVuelo, aerolinea));
+                case 1:
+                case 2:
+                    return List.copyOf(vueloService.buscarVuelosEscalas(origen, destino, salida, regreso, tipoVuelo, aerolinea));
+                default:
+                    throw new IllegalArgumentException("Número de escalas no válido.");
+            }
+        } catch (DateTimeException e) {
+            throw new DateTimeException("Fecha de salida incorrecta");
+        }
+    }
+
     @GetMapping("/{id}")
     public Optional<Vuelo> obtenerVuelo(@PathVariable int id) {
         return vueloService.obtenerVueloPorId(id);

@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class VueloService {
@@ -17,6 +16,61 @@ public class VueloService {
     public List<Vuelo> buscarVuelos(int origen, int destino, LocalDateTime fecha_salida, LocalDateTime fecha_regreso,
                                     Vuelo.TipoVuelo tipoVuelo, Integer aerolinea) {
         return repository.buscarVuelos(origen, destino, fecha_salida, fecha_regreso, tipoVuelo, aerolinea);
+    }
+
+    public List<Vuelo> buscarVuelosDirectos(int origen,
+                                            int destino,
+                                            LocalDateTime fecha_salida,
+                                            LocalDateTime fecha_regreso,
+                                            Vuelo.TipoVuelo tipoVuelo,
+                                            Integer aerolinea) {
+        return repository.buscarVuelosDirectos(origen, destino, fecha_salida, fecha_regreso, tipoVuelo, aerolinea);
+    }
+
+    public List<Map<String, Vuelo>> buscarVuelosEscalas(int origen,
+                                            int destino,
+                                            LocalDateTime fecha_salida,
+                                            LocalDateTime fecha_regreso,
+                                            Vuelo.TipoVuelo tipoVuelo,
+                                            Integer aerolinea) {
+        List<Object[]> resultados = repository.buscarVuelosEscalas(origen, destino, fecha_salida, fecha_regreso, tipoVuelo, aerolinea);
+        List<Map<String, Vuelo>> vuelosConEscalas = new ArrayList<>();
+
+        for (Object[] fila : resultados) {
+            Vuelo vueloPrincipal = (Vuelo) fila[0];
+            Vuelo vueloEscala = (Vuelo) fila[1];
+
+            Map<String, Vuelo> vueloMap = new HashMap<>();
+            vueloMap.put("vuelo_principal", vueloPrincipal);
+            vueloMap.put("vuelo_escala", vueloEscala);
+            vuelosConEscalas.add(vueloMap);
+        }
+
+        return vuelosConEscalas;
+    }
+
+    public List<Object> buscarVuelosEscalasyDirectos(int origen,
+                                                     int destino,
+                                                     LocalDateTime fecha_salida,
+                                                     LocalDateTime fecha_regreso,
+                                                     Vuelo.TipoVuelo tipoVuelo,
+                                                     Integer aerolinea) {
+        List<Object> resultado = new ArrayList<>();
+
+        List<Vuelo> vuelosDirectos = repository.buscarVuelosDirectosoEscalas(origen, destino, fecha_salida, fecha_regreso, tipoVuelo, aerolinea);
+        System.out.println("Vuelos directos encontrados: " + vuelosDirectos.size());
+        List<Object[]> vuelosconEscalas = repository.buscarVuelosEscalas(origen, destino, fecha_salida, fecha_regreso, tipoVuelo, aerolinea);
+        System.out.println("Vuelos con escalas encontrados: " + vuelosconEscalas.size());
+        for (Object[] vuelo : vuelosconEscalas) {
+            Map<String, Object> vueloConEscala = new HashMap<>();
+            vueloConEscala.put("vuelo_principal", vuelo[0]);
+            vueloConEscala.put("vuelo_escala", vuelo[1]);
+            resultado.add(vueloConEscala);
+        }
+
+        resultado.addAll(vuelosDirectos);
+
+        return resultado;
     }
 
     public Optional<Vuelo> obtenerVueloPorId(int id) {
@@ -41,7 +95,6 @@ public class VueloService {
             vuelo.setId_vuelo_regreso(nuevoVuelo.getId_vuelo_regreso());
             return repository.save(vuelo);
         }).orElseThrow(()-> new RuntimeException("No se encontro el registro"));
-
     }
 
     public void eliminarVuelo(int id) {
