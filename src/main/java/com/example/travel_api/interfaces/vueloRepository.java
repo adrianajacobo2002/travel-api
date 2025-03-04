@@ -29,7 +29,9 @@ public interface vueloRepository extends JpaRepository<Vuelo, Integer> {
             );
 
 
-    @Query("SELECT v FROM Vuelo v WHERE v.origen.id_aeropuerto = :origen " +
+    @Query("SELECT v FROM Vuelo v " +
+            "LEFT JOIN FETCH v.clases vc " +
+            "WHERE v.origen.id_aeropuerto = :origen " +
             "AND v.destino.id_aeropuerto = :destino " +
             "AND v.fecha_salida >= :fecha_salida " +
             "AND (:fecha_regreso IS NULL OR v.fecha_regreso = :fecha_regreso) " +

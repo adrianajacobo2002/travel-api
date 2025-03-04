@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -69,6 +70,11 @@ public class Vuelo {
 
     @OneToOne(mappedBy = "vueloRegreso")
     private Vuelo vueloIda;
+
+
+    @OneToMany(mappedBy = "vuelo", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonProperty("clases")
+    private List<VueloClase> clases;
 
     public Vuelo() {}
 

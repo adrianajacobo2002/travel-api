@@ -24,7 +24,12 @@ public class VueloService {
                                             LocalDateTime fecha_regreso,
                                             Vuelo.TipoVuelo tipoVuelo,
                                             Integer aerolinea) {
-        return repository.buscarVuelosDirectos(origen, destino, fecha_salida, fecha_regreso, tipoVuelo, aerolinea);
+        List<Vuelo> vuelos = repository.buscarVuelosDirectos(origen, destino, fecha_salida, fecha_regreso, tipoVuelo, aerolinea);
+
+        for (Vuelo v : vuelos) {
+            System.out.println("Vuelo: " + v.getNumero_vuelo() + ", Clases: " + v.getClases());
+        }
+        return vuelos;
     }
 
     public List<Map<String, Vuelo>> buscarVuelosEscalas(int origen,

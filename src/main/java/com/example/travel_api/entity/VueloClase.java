@@ -1,6 +1,9 @@
 package com.example.travel_api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +12,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "vuelos_clases")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_vuelo_clase")
 public class VueloClase {
 
     @Id
@@ -16,8 +20,10 @@ public class VueloClase {
     @JsonProperty("id_vuelo_clase")
     private int id_vuelo_clase;
 
-    @JsonProperty("id_vuelo")
-    private int id_vuelo;
+    @ManyToOne
+    @JoinColumn(name = "id_vuelo", nullable = false)
+    @JsonIgnore
+    private Vuelo vuelo;
 
     @JsonProperty("nombre_clase")
     private String nombre_clase;
