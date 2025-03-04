@@ -29,4 +29,8 @@ public class UsuarioService {
         return usuarioRepository.findByEmail(email);
     }
 
+    public Optional<Usuario> obtenerUsuarioPorId(Long id){
+        return usuarioRepository.findById(id);
+    }
+
 }

@@ -106,5 +106,10 @@ public class AuthController {
 
     }
 
+    @GetMapping("/{id}")
+    public Optional<Usuario> obtenerUsuarioPorId(@PathVariable Long id) {
+        return usuarioService.obtenerUsuarioPorId(id);
+    }
+
 
 }
